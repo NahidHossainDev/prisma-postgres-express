@@ -34,12 +34,11 @@ model Profile {
 }
 
 model Category {
-  id     Int    @id @default(autoincrement())
-  name   String
-  post   Post[]
-  postId Int
+  id   Int    @id @default(autoincrement())
+  name String
+  post Post[]
 
-  @@map("categoryies")
+  @@map("categories")
 }
 
 model Post {
