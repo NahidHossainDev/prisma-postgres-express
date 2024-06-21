@@ -4,3 +4,9 @@ export type IPostPayload = {
 	authorId: number;
 	categoryId: number;
 };
+
+export type IPostQuery = {
+	published?: boolean;
+	authorId?: number;
+	categoryId?: number;
+};

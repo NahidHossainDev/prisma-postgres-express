@@ -3,7 +3,8 @@ import { PostService } from "./post.service";
 
 const getAllPost = async (req: Request, res: Response) => {
 	try {
-		const data = await PostService.getAllPost();
+		const query = req.query;
+		const data = await PostService.getAllPost(query);
 		res.send({
 			success: true,
 			data,
