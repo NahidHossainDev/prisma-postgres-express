@@ -3,3 +3,8 @@ export type IUserPayload = {
 	name: string;
 	role: string;
 };
+
+export type IProfilePayload = {
+	bio: string;
+	userId: number;
+};
