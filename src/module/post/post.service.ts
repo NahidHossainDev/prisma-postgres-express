@@ -1,19 +1,25 @@
-import { Post, PrismaClient } from "@prisma/client";
+import { Post, Prisma, PrismaClient } from "@prisma/client";
 import { IPostPayload, IPostQuery } from "./post.interface";
 
 const prisma = new PrismaClient();
 
 const getAllPost = async (queries: IPostQuery): Promise<Post[]> => {
+	const { sortBy, sortOrder, searchTerm, ...rest } = queries;
 	let whereCondition: any = {};
-	if (Object.entries(queries).length) {
-		Object.entries(queries).forEach(([key, value]) => {
+	if (Object.entries(rest).length) {
+		Object.entries(rest).forEach(([key, value]) => {
 			if (key !== "published" && typeof value === "string") whereCondition[key] = Number(value as string);
 		});
 	}
 	console.log(whereCondition);
 
+	const orderBy: Prisma.PostOrderByWithRelationInput = sortBy
+		? { [sortBy]: sortOrder ? sortOrder : "asc" }
+		: { createdAt: "asc" };
+
 	const result = await prisma.post.findMany({
 		where: whereCondition,
+		orderBy,
 		include: {
 			author: {
 				select: {

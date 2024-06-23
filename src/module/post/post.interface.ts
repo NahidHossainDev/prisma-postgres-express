@@ -9,4 +9,7 @@ export type IPostQuery = {
 	published?: boolean;
 	authorId?: number;
 	categoryId?: number;
+	sortBy?: string;
+	sortOrder?: string;
+	searchTerm?: string;
 };
