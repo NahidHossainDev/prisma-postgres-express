@@ -11,5 +11,7 @@ export type IPostQuery = {
 	categoryId?: number;
 	sortBy?: string;
 	sortOrder?: string;
+	page?: string;
+	limit?: string;
 	searchTerm?: string;
 };

@@ -5,7 +5,7 @@ import { IPostPayload, IPostQuery } from "./post.interface";
 const prisma = new PrismaClient();
 
 const getAllPost = async (queries: IPostQuery): Promise<Post[]> => {
-	const { sortBy, sortOrder, searchTerm, ...rest } = queries;
+	const { sortBy, sortOrder, searchTerm, page = 1, limit = 5, ...rest } = queries || {};
 	let whereCondition: any = [];
 	if (Object.entries(rest).length) {
 		whereCondition.push({
@@ -31,9 +31,14 @@ const getAllPost = async (queries: IPostQuery): Promise<Post[]> => {
 		? { [sortBy]: sortOrder ? sortOrder : "asc" }
 		: { createdAt: "asc" };
 
+	const skip = Number(page) * Number(limit) - Number(limit);
+	const take = Number(limit);
+
 	const result = await prisma.post.findMany({
-		where: { AND: whereCondition },
 		orderBy,
+		skip,
+		take,
+		where: { AND: whereCondition },
 		include: {
 			author: {
 				select: {
