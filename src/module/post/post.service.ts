@@ -4,7 +4,7 @@ import { IPostPayload, IPostQuery } from "./post.interface";
 
 const prisma = new PrismaClient();
 
-const getAllPost = async (queries: IPostQuery): Promise<Post[]> => {
+const getAllPost = async (queries: IPostQuery): Promise<any> => {
 	const { sortBy, sortOrder, searchTerm, page = 1, limit = 5, ...rest } = queries || {};
 	let whereCondition: any = [];
 	if (Object.entries(rest).length) {
@@ -31,25 +31,35 @@ const getAllPost = async (queries: IPostQuery): Promise<Post[]> => {
 		? { [sortBy]: sortOrder ? sortOrder : "asc" }
 		: { createdAt: "asc" };
 
-	const skip = Number(page) * Number(limit) - Number(limit);
+	const skip = Number(limit) * (Number(page) - 1);
 	const take = Number(limit);
 
-	const result = await prisma.post.findMany({
-		orderBy,
-		skip,
-		take,
-		where: { AND: whereCondition },
-		include: {
-			author: {
-				select: {
-					name: true,
-					id: true,
+	return await prisma.$transaction(async (tx) => {
+		const result = await tx.post.findMany({
+			orderBy,
+			skip,
+			take,
+			where: { AND: whereCondition },
+			include: {
+				author: {
+					select: {
+						name: true,
+						id: true,
+					},
 				},
+				category: true,
 			},
-			category: true,
-		},
+		});
+
+		const total = await tx.post.count();
+
+		return {
+			total,
+			page,
+			limit,
+			data: result,
+		};
 	});
-	return result;
 };
 
 const getSinglePost = async (id: string): Promise<Post | null> => {
