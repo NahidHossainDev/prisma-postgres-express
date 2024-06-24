@@ -18,6 +18,22 @@ const getAllPost = async (req: Request, res: Response) => {
 	}
 };
 
+const getPostGroupByCat = async (req: Request, res: Response) => {
+	try {
+		const data = await PostService.getPostGroupByCat();
+		res.send({
+			success: true,
+			data,
+			message: "Post retrieve successfully",
+		});
+	} catch (error) {
+		res.send({
+			success: false,
+			data: error,
+		});
+	}
+};
+
 const getSinglePost = async (req: Request, res: Response) => {
 	const id = req.params.id;
 	try {
@@ -88,6 +104,7 @@ const deletePost = async (req: Request, res: Response) => {
 
 export const PostController = {
 	getAllPost,
+	getPostGroupByCat,
 	getSinglePost,
 	createPost,
 	updatePost,

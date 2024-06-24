@@ -62,6 +62,17 @@ const getAllPost = async (queries: IPostQuery): Promise<any> => {
 	});
 };
 
+const getPostGroupByCat = async (): Promise<any> => {
+	const result = await prisma.post.groupBy({
+		by: ["categoryId"],
+		_count: {
+			authorId: true,
+			published: true,
+		},
+	});
+	return result;
+};
+
 const getSinglePost = async (id: string): Promise<Post | null> => {
 	const result = await prisma.post.findUnique({
 		where: { id: parseInt(id) },
@@ -98,6 +109,7 @@ const deletePost = async (id: string): Promise<Post> => {
 
 export const PostService = {
 	getAllPost,
+	getPostGroupByCat,
 	getSinglePost,
 	createPost,
 	updatePost,
