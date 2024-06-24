@@ -7,6 +7,17 @@ const getAllCategory = async (): Promise<Category[]> => {
 	const result = await prisma.category.findMany();
 	return result;
 };
+
+const getAllCategoriesPosts = async (): Promise<Category[]> => {
+	const result = await prisma.category.findMany({
+		include: {
+			post: true,
+			_count: true,
+		},
+	});
+	return result;
+};
+
 const getSingleCategory = async (id: string): Promise<Category | null> => {
 	const result = await prisma.category.findUnique({
 		where: { id: parseInt(id) },
@@ -34,6 +45,7 @@ const deleteCategory = async (id: string): Promise<Category> => {
 
 export const CategoryService = {
 	getAllCategory,
+	getAllCategoriesPosts,
 	getSingleCategory,
 	createCategory,
 	updateCategory,
